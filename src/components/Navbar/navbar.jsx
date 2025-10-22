@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Bell } from "lucide-react";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
   return (
@@ -25,7 +26,7 @@ export default function Navbar() {
         </Link>
 
         <div className="relative">
-          <Bell className="w-5 h-5 text-gray-700" />
+          <NotificationBell />
         </div>
 
         <img
