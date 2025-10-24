@@ -38,7 +38,7 @@ export default function CreateDonationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-emerald-50">
       <div className="mx-auto max-w-5xl px-4 py-8">
         {/* Page Title */}
         <div className="mb-6">
