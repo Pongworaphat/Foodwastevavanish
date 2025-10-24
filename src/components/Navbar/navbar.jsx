@@ -7,6 +7,7 @@ export default function Navbar() {
     <nav className="flex items-center justify-between px-8 py-3 bg-white shadow-sm">
       {/* Logo */}
       <Link to="/" className="flex items-center space-x-1">
+        <span className="w-8 h-8"><img src="/src/assets/imgfoodwaste/Logofoodwaste.png" alt="logo" /></span>
         <span className="font-bold text-lg">Foodwaste</span>
         <span className="font-bold text-lg text-green-600">vanish</span>
       </Link>
