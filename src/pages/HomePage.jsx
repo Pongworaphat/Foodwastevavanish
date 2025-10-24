@@ -22,18 +22,8 @@ export default function Homepage() {
                 ให้อาหารแก่สัตว์จรจัด หรือบริจาคขยะอินทรีย์เพื่อทำปุ๋ยหมัก
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
-                <Link
-                  to="/browse"
-                  className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-white font-medium shadow-xl-soft hover:bg-emerald-700 transition"
-                >
-                  Browse Donations
-                </Link>
-                <Link
-                  to="/donate"
-                  className="inline-flex items-center justify-center rounded-full px-5 py-3 font-medium ring-1 ring-emerald-300 text-emerald-800 bg-white/70 hover:bg-white transition"
-                >
-                  Start Donating
-                </Link>
+                <Link to="/browse" className="inline-flex items-center justify-center rounded-full bg-emerald-600 px-5 py-3 text-white font-medium shadow-xl-soft hover:bg-emerald-700 transition">Browse Donations</Link>
+                <Link to="/donate" className="inline-flex items-center justify-center rounded-full px-5 py-3 font-medium ring-1 ring-emerald-300 text-emerald-800 bg-white/70 hover:bg-white transition">Start Donating</Link>
               </div>
             </div>
 

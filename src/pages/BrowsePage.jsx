@@ -60,11 +60,10 @@ export default function BrowsePage() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`flex-1 rounded-2xl px-4 py-2 text-sm font-semibold transition ${
-                activeCategory === cat
+              className={`flex-1 rounded-2xl px-4 py-2 text-sm font-semibold transition ${activeCategory === cat
                   ? "bg-white shadow-sm text-black"
                   : "text-gray-700"
-              }`}
+                }`}
             >
               {cat} (
               {cat === "All Donations"
