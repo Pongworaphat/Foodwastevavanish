@@ -10,7 +10,7 @@ export default function SigninPage() {
   const handleSignIn = (e) => {
     e.preventDefault();
 
-    if (username === "user" && password === "user1234") {
+    if (username === "user" && password === "lovefinn") {
       localStorage.setItem("isSignedIn", "true");
       navigate("/");
     } else {
