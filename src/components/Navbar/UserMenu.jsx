@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 export default function UserMenu({ onSignOut }) {
     const [open, setOpen] = useState(false);
     const menuRef = useRef();
+    const userImage = "https://cdn-icons-png.flaticon.com/512/4140/4140037.png"; 
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -15,68 +16,85 @@ export default function UserMenu({ onSignOut }) {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    
+    const MenuLink = ({ to, children }) => (
+        <Link
+            to={to}
+            onClick={() => setOpen(false)} 
+            className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors duration-150"
+        >
+            {children}
+        </Link>
+    );
+
     return (
         <div className="relative" ref={menuRef}>
-            {/* ปุ่มรูปโปรไฟล์ */}
+            
             <button onClick={() => setOpen(!open)} className="focus:outline-none">
                 <img
-                    src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png"
+                    src={userImage}
                     alt="User"
-                    className="w-8 h-8 rounded-full border"
+                    className="w-9 h-9 rounded-full border border-gray-200 hover:opacity-90 transition-opacity"
                 />
             </button>
 
-            {/* เมนูที่เลื่อนลง */}
+            
             {open && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border py-2 z-50">
-                    <div className="px-4 py-2 border-b font-semibold text-gray-800">
-                        [รูปโปรไฟล์] ชื่อผู้ใช้
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50">
+                    {/* ส่วนหัวของเมนู */}
+                    <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-100">
+                        <img
+                            src={userImage}
+                            alt="User"
+                            className="w-11 h-11 rounded-full border"
+                        />
+                        <div>
+                            <div className="font-semibold text-gray-800">ชื่อผู้ใช้</div>
+                            <div className="text-xs text-gray-500">user@foodwaste.com</div>
+                        </div>
                     </div>
 
-                    <Link
-                        to="/profile"
-                        className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
-                    >
-                        จัดการโปรไฟล์
-                    </Link>
+                    <div className="py-1">
+                        <MenuLink to="/profile">
+                            
+                            <span>จัดการโปรไฟล์</span>
+                        </MenuLink>
+                        <MenuLink to="/dashboard">
+                            
+                            <span>กิจกรรมของฉัน</span>
+                        </MenuLink>
+                        <MenuLink to="/settings">
+    
+                            <span>การตั้งค่า</span>
+                        </MenuLink>
+                    </div>
 
-                    <div className="border-t my-1" />
+                    <div className="border-t border-gray-100" />
 
-                    <Link
-                        to="/dashboard"
-                        className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
-                    >
-                        แดชบอร์ด / กิจกรรมของฉัน
-                    </Link>
-                    <Link
-                        to="/settings"
-                        className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
-                    >
-                        การตั้งค่า
-                    </Link>
+                    <div className="py-1">
+                        <MenuLink to="/help">
+                            
+                            <span>ความช่วยเหลือ</span>
+                        </MenuLink>
+                        <MenuLink to="/feedback">
+                            
+                            <span>ส่งความคิดเห็น</span>
+                        </MenuLink>
+                    </div>
 
-                    <div className="border-t my-1" />
 
-                    <Link
-                        to="/help"
-                        className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
-                    >
-                        ความช่วยเหลือ
-                    </Link>
-                    <Link
-                        to="/feedback"
-                        className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
-                    >
-                        ส่งความคิดเห็น
-                    </Link>
+                    <div className="border-t border-gray-100" />
 
-                    <div className="border-t my-1" />
-
-                    <button
-                        onClick={onSignOut}
-                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
-                        ออกจากระบบ
-                    </button>
+                    
+                    <div className="p-1">
+                        <button
+                            onClick={onSignOut}
+                            className="flex items-center gap-3 w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-150"
+                        >
+                            
+                            <span className="font-medium">ออกจากระบบ</span>
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
