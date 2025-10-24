@@ -3,7 +3,13 @@ import { Bell } from "lucide-react";
 
 const NotificationBell = ({ isSignedIn }) => {
   const [open, setOpen] = useState(false);
+  const [signedIn, setSignedIn] = useState(isSignedIn);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("isSignedIn") === "true";
+    setSignedIn(isSignedIn || stored);
+  }, [isSignedIn]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -11,12 +17,8 @@ const NotificationBell = ({ isSignedIn }) => {
         setOpen(false);
       }
     };
-    if (open) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    if (open) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [open]);
 
   return (
@@ -32,21 +34,16 @@ const NotificationBell = ({ isSignedIn }) => {
       {open && (
         <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
           <div className="p-3 text-gray-700 font-medium border-b">
-            Notification
+            Notifications
           </div>
 
-          {isSignedIn ? (
-
+          {signedIn ? (
             <div className="p-3 text-sm text-gray-500">
-              No notification yet
+              No notifications yet
             </div>
           ) : (
             <div className="p-3 text-sm text-gray-500">
-              Please{" "}
-              <a href="/login" className="text-blue-600 hover:underline">
-                sign in
-              </a>{" "}
-              to view notifications.
+              กรุณาเข้าสู่ระบบเพื่อดูการแจ้งเตือน
             </div>
           )}
         </div>

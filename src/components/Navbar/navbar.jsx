@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Bell } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import UserMenu from "./UserMenu";
@@ -7,21 +7,14 @@ import ButtonSignIn from "./ButtonSingin";
 
 export default function Navbar() {
   const [isSignedIn, setIsSignedIn] = useState(false);
-
+  const location = useLocation();
 
   useEffect(() => {
     const savedStatus = localStorage.getItem("isSignedIn");
     if (savedStatus === "true") {
       setIsSignedIn(true);
     }
-  }, []);
-
-
-  const handleSignIn = () => {
-    setIsSignedIn(true);
-    localStorage.setItem("isSignedIn", "true");
-  };
-
+  }, [location]);
 
   const handleSignOut = () => {
     setIsSignedIn(false);
@@ -55,18 +48,17 @@ export default function Navbar() {
           Donate Food
         </Link>
 
-        <div className="relative">
-          <NotificationBell isSignedIn={isSignedIn} />
-        </div>
+        {isSignedIn && (
+          <div className="relative">
+            <NotificationBell isSignedIn={isSignedIn} />
+          </div>
+        )}
 
         <div className="flex justify-center items-center w-42">
           {!isSignedIn ? (
-            <div
-              onClick={handleSignIn}
-              className="flex items-center h-10"
-            >
+            <Link to="/signin" className="flex items-center h-10">
               <ButtonSignIn />
-            </div>
+            </Link>
           ) : (
             <UserMenu onSignOut={handleSignOut} />
           )}
