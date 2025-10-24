@@ -14,7 +14,7 @@ export default function Homepage() {
                 Reduce food waste • Help others
               </p>
               <h1 className="text-5xl sm:text-6xl font-semibold leading-tight tracking-tight text-emerald-900">
-                <span className="block">Share Food,</span>
+                <span className="block">Share Food</span>
                 <span className="block text-emerald-600 mt-1">Share Love</span>
               </h1>
               <p className="mt-6 text-lg text-emerald-900/80 max-w-xl">

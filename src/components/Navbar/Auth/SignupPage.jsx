@@ -17,9 +17,7 @@ export default function SignupPage() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-emerald-50">
       <div className="bg-neutral-900 text-white shadow-lg rounded-2xl p-8 w-[380px]">
-        <h1 className="text-2xl font-bold text-center mb-6  ">
-          สมัครสมาชิก FoodwasteVanish
-        </h1>
+        <h1 className="text-2xl font-bold text-center mb-6 whitespace-nowrap flex justify-center"> สมัครสมาชิก <span className="ml-1 text-green-400">FoodwasteVanish</span></h1>
 
         <form onSubmit={handleSignup} className="space-y-4">
           <input
@@ -57,13 +55,13 @@ export default function SignupPage() {
           </button>
 
           <div className="mt-6 space-y-2">
-          <button className="w-full bg-neutral-800 text-white py-2 rounded-lg">
-            ดำเนินการต่อด้วย Facebook
-          </button>
-          <button className="w-full bg-neutral-800 text-white py-2 rounded-lg">
-            ดำเนินการต่อด้วย Google
-          </button>
-        </div>
+            <button className="w-full bg-neutral-800 text-white py-2 rounded-lg">
+              ดำเนินการต่อด้วย Facebook
+            </button>
+            <button className="w-full bg-neutral-800 text-white py-2 rounded-lg">
+              ดำเนินการต่อด้วย Google
+            </button>
+          </div>
         </form>
 
         <p className="text-center text-sm text-gray-400 mt-6">

@@ -21,9 +21,7 @@ export default function SigninPage() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-emerald-50">
       <div className="bg-neutral-900 text-white shadow-lg rounded-2xl p-8 w-[380px]">
-        <h1 className="text-2xl font-bold text-center mb-6">
-          เข้าสู่ระบบ FoodwasteVanish
-        </h1>
+        <h1 className="text-2xl font-bold text-center mb-6 whitespace-nowrap flex justify-center"> เข้าสู่ระบบ <span className="ml-1 text-green-400">FoodwasteVanish</span> </h1>
 
         <form onSubmit={handleSignIn} className="space-y-4">
           <input
