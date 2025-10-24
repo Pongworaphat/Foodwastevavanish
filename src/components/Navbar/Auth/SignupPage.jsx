@@ -10,7 +10,6 @@ export default function SignupPage() {
   const handleSignup = (e) => {
     e.preventDefault();
 
-    // จำลองการสมัคร (ยังไม่เชื่อม backend)
     alert("สมัครสมาชิกสำเร็จ!");
     navigate("/signin");
   };
@@ -18,7 +17,7 @@ export default function SignupPage() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-emerald-50">
       <div className="bg-neutral-900 text-white shadow-lg rounded-2xl p-8 w-[380px]">
-        <h1 className="text-2xl font-bold text-center mb-6">
+        <h1 className="text-2xl font-bold text-center mb-6  ">
           สมัครสมาชิก FoodwasteVanish
         </h1>
 
@@ -56,6 +55,15 @@ export default function SignupPage() {
           >
             สมัครสมาชิก
           </button>
+
+          <div className="mt-6 space-y-2">
+          <button className="w-full bg-neutral-800 text-white py-2 rounded-lg">
+            ดำเนินการต่อด้วย Facebook
+          </button>
+          <button className="w-full bg-neutral-800 text-white py-2 rounded-lg">
+            ดำเนินการต่อด้วย Google
+          </button>
+        </div>
         </form>
 
         <p className="text-center text-sm text-gray-400 mt-6">
