@@ -2,11 +2,14 @@ import React, { useState } from "react";
 
 export default function ReceivedPage() {
   const [tab, setTab] = useState("Pending");
+  const [receivedList, setReceivedList] = useState([]);
 
   const counts = {
-    Pending: 0,
-    Completed: 0,
+    Pending: receivedList.filter(item => item.status === 'Pending').length,
+    Completed: receivedList.filter(item => item.status === 'Completed').length,
   };
+
+
 
   return (
     <div className="min-h-screen bg-emerald-50">
@@ -31,6 +34,7 @@ export default function ReceivedPage() {
               <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
                 <img src="/src/assets/imgfoodwaste/heart.png" alt="like" />
               </div>
+
             </div>
           </div>
 
