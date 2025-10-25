@@ -7,6 +7,7 @@ import ReceivedPage from "./pages/ReceivedPage";
 import CreateDonationPage from './pages/CreateDonationPage';
 import SigninPage from "./components/Navbar/Auth/SigninPage";
 import SignupPage from "./components/Navbar/Auth/SignupPage";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/donate" element={<CreateDonationPage />} />
           <Route path="/signin" element={<SigninPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/chat" element={<ChatPage />} />
         </Routes>
       </div>
     </>
