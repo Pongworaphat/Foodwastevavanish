@@ -8,6 +8,11 @@ import CreateDonationPage from './pages/CreateDonationPage';
 import SigninPage from "./components/Navbar/Auth/SigninPage";
 import SignupPage from "./components/Navbar/Auth/SignupPage";
 import ChatPage from "./pages/ChatPage";
+import ProfilePage from "./pages/ProfilePage";
+import MyActivitiesPage from "./pages/MyActivitiesPage";
+import SettingsPage from "./pages/SettingsPage";
+import HelpPage from "./pages/HelpPage";
+import FeedbackPage from "./pages/FeedbackPage";
 
 function App() {
   return (
@@ -23,6 +28,11 @@ function App() {
           <Route path="/signin" element={<SigninPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/dashboard" element={<MyActivitiesPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/help" element={<HelpPage />} />
+          <Route path="/feedback" element={<FeedbackPage />} />
         </Routes>
       </div>
     </>
