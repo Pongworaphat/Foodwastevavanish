@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Bell } from "lucide-react";
 import NotificationBell from "./NotificationBell";
-import UserMenu from "./UserMenu";
+import UserMenu from "./DropdownMenu/UserMenu";
 import ButtonSignIn from "./ButtonSingin";
 
 export default function Navbar() {
