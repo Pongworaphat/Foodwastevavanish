@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 
 export default function CreateDonationPage() {
-  const categories = [
-    { key: "food", label: "Food Sharing", desc: "Share surplus food with people in need" },
-    { key: "animal", label: "Animal Food", desc: "Donate food for stray animals" },
-    { key: "organic", label: "Organic Waste", desc: "Share food waste for composting" },
-  ];
-
-  const [selectedCategory, setSelectedCategory] = useState("food");
+  const [selectedCategory, setSelectedCategory] = useState("Food Sharing");
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -20,265 +14,309 @@ export default function CreateDonationPage() {
     timeEnd: "",
     images: [],
   });
+  const [submitting, setSubmitting] = useState(false);
 
-  const onChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "images") {
-      setForm((s) => ({ ...s, images: Array.from(files || []) }));
-    } else {
-      setForm((s) => ({ ...s, [name]: value }));
+  const categories = [
+    {
+      name: "Food Sharing",
+      desc: "Share surplus food with people in need",
+    },
+    {
+      name: "Animal Food",
+      desc: "Donate food for stray animals",
+    },
+    {
+      name: "Organic Waste",
+      desc: "Share food waste for composting",
+    },
+  ];
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleImageChange = (e) => {
+    setForm({ ...form, images: Array.from(e.target.files) });
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const fd = new FormData();
+      fd.append("category", selectedCategory);
+      Object.entries(form).forEach(([k, v]) => {
+        if (k !== "images") fd.append(k, v ?? "");
+      });
+      (form.images || []).forEach((file) => fd.append("images", file));
+
+      const res = await fetch("/api/donations", { method: "POST", body: fd });
+      if (!res.ok) throw new Error("Failed to create donation");
+
+      alert("Donation created successfully!");
+      window.location.href = "/my-donations";
+    } catch (err) {
+      alert("❌ Error: " + err.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    // TODO: replace with real submit logic
-    console.log({ category: selectedCategory, ...form });
-    alert("Submitted (demo). Check console for payload.");
-  };
-
   return (
-    <div className="min-h-screen bg-emerald-50">
-      <div className="mx-auto max-w-5xl px-4 py-8">
-        {/* Page Title */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-semibold text-gray-900">Create Donation</h1>
-          <p className="mt-1 text-gray-600">Share your food with the community</p>
+    <div className="min-h-screen bg-emerald-50 py-10 px-4 flex justify-center">
+      <div className="w-full max-w-4xl space-y-6">
+        {/* Header */}
+        <div className="bg-emerald-100 text-center rounded-2xl py-6">
+          <h1 className="text-3xl font-bold text-gray-900">Create Donation</h1>
+          <p className="text-gray-700 mt-1">
+            Share your food with the community
+          </p>
         </div>
 
-        <form onSubmit={onSubmit} className="space-y-6">
-          {/* Category */}
-          <section className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
-            <h2 className="text-lg font-medium text-gray-900">Select Category</h2>
-            <p className="mt-1 text-sm text-gray-600">
-              Choose the type of donation you want to create
-            </p>
+        {/* Category Selection */}
+        <div className="bg-white rounded-2xl shadow-md p-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-2">
+            Select Category
+          </h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Choose the type of donation you want to create
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {categories.map((cat) => (
+              <button
+                key={cat.name}
+                type="button"
+                onClick={() => setSelectedCategory(cat.name)}
+                className={`border rounded-2xl p-4 text-left transition ${
+                  selectedCategory === cat.name
+                    ? "border-2 border-emerald-600 bg-emerald-50"
+                    : "border-gray-200 hover:bg-gray-50"
+                }`}
+              >
+                <h3
+                  className={`font-semibold text-lg ${
+                    selectedCategory === cat.name
+                      ? "text-emerald-700"
+                      : "text-gray-800"
+                  }`}
+                >
+                  {cat.name}
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">{cat.desc}</p>
+              </button>
+            ))}
+          </div>
+        </div>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              {categories.map((c) => {
-                const active = selectedCategory === c.key;
-                return (
-                  <button
-                    key={c.key}
-                    type="button"
-                    onClick={() => setSelectedCategory(c.key)}
-                    className={[
-                      "rounded-2xl border p-4 text-left transition",
-                      active
-                        ? "border-emerald-500 ring-2 ring-emerald-200"
-                        : "border-gray-200 hover:border-gray-300",
-                    ].join(" ")}
-                  >
-                    <div className="font-medium text-gray-900">{c.label}</div>
-                    <div className="mt-1 text-sm text-gray-600">{c.desc}</div>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* Donation Details */}
-          <section className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
-            <h2 className="text-lg font-medium text-gray-900">Donation Details</h2>
-            <p className="mt-1 text-sm text-gray-600">
+        {/* Donation Details */}
+        <form
+          onSubmit={onSubmit}
+          className="bg-white rounded-2xl shadow-md p-6 space-y-6"
+        >
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+              Donation Details
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
               Provide information about your donation
             </p>
 
-            <div className="mt-4 space-y-4">
+            <div className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Title <span className="text-rose-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title <span className="text-red-500">*</span>
                 </label>
                 <input
+                  type="text"
                   name="title"
                   value={form.title}
-                  onChange={onChange}
-                  required
+                  onChange={handleChange}
                   placeholder="e.g., Fresh Bread and Pastries"
-                  className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none ring-emerald-200 focus:ring-2"
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-200"
+                  required
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Description <span className="text-rose-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   name="description"
                   value={form.description}
-                  onChange={onChange}
-                  required
-                  rows={4}
+                  onChange={handleChange}
                   placeholder="Provide details about the food, its condition, and any special notes"
-                  className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none ring-emerald-200 focus:ring-2"
+                  rows="3"
+                  required
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-200"
                 />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Food Type
                   </label>
-                    <select
-                      name="foodType"
-                      value={form.foodType}
-                      onChange={onChange}
-                      className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none ring-emerald-200 focus:ring-2"
-                    >
-                      <option value="">Select food type</option>
-                      <option>Cooked</option>
-                      <option>Bakery</option>
-                      <option>Fresh Produce</option>
-                      <option>Packaged/Canned</option>
-                      <option>Other</option>
-                    </select>
+                  <select
+                    name="foodType"
+                    value={form.foodType}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-200"
+                  >
+                    <option value="">Select food type</option>
+                    <option value="Cooked Food">Cooked Food</option>
+                    <option value="Bakery">Bakery</option>
+                    <option value="Fruits">Fruits</option>
+                    <option value="Vegetables">Vegetables</option>
+                    <option value="Dry Food">Dry Food</option>
+                  </select>
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    Quantity <span className="text-rose-500">*</span>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Quantity <span className="text-red-500">*</span>
                   </label>
                   <input
+                    type="text"
                     name="quantity"
                     value={form.quantity}
-                    onChange={onChange}
-                    required
+                    onChange={handleChange}
                     placeholder="e.g., 20 pieces, 5kg"
-                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none ring-emerald-200 focus:ring-2"
+                    required
+                    className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-200"
                   />
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Production Date
                   </label>
                   <input
                     type="date"
                     name="prodDate"
                     value={form.prodDate}
-                    onChange={onChange}
-                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none ring-emerald-200 focus:ring-2"
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-200"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Expiration Date
                   </label>
                   <input
                     type="date"
                     name="expDate"
                     value={form.expDate}
-                    onChange={onChange}
-                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none ring-emerald-200 focus:ring-2"
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-200"
                   />
                 </div>
               </div>
 
-              {/* Upload */}
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Upload Images
                 </label>
-                <label
-                  className="flex cursor-pointer items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 px-4 py-10 text-center text-sm text-gray-600 hover:bg-gray-100"
-                >
-                  <div>
-                    <div className="font-medium text-gray-900">Click to upload or drag and drop</div>
-                    <div className="mt-1 text-xs text-gray-500">PNG, JPG up to 10MB</div>
-                  </div>
+                <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center text-gray-500 hover:border-emerald-300 transition">
                   <input
-                    name="images"
                     type="file"
-                    accept="image/*"
                     multiple
-                    onChange={onChange}
+                    onChange={handleImageChange}
                     className="hidden"
+                    id="image-upload"
                   />
-                </label>
-
-                {form.images.length > 0 && (
-                  <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-gray-700">
-                    {form.images.map((f, i) => (
-                      <li key={i}>{f.name}</li>
-                    ))}
-                  </ul>
-                )}
+                  <label htmlFor="image-upload" className="cursor-pointer">
+                    Click to upload or drag and drop <br />
+                    <span className="text-xs text-gray-400">
+                      PNG, JPG up to 10MB
+                    </span>
+                  </label>
+                </div>
               </div>
             </div>
-          </section>
+          </div>
 
           {/* Pickup Information */}
-          <section className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6">
-            <h2 className="text-lg font-medium text-gray-900">Pickup Information</h2>
-            <p className="mt-1 text-sm text-gray-600">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">
+              Pickup Information
+            </h2>
+            <p className="text-sm text-gray-600 mb-4">
               Where and when can recipients collect the donation
             </p>
 
-            <div className="mt-4 space-y-4">
+            <div className="space-y-4">
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
-                  Pickup Address <span className="text-rose-500">*</span>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Pickup Address <span className="text-red-500">*</span>
                 </label>
                 <input
+                  type="text"
                   name="address"
                   value={form.address}
-                  onChange={onChange}
-                  required
+                  onChange={handleChange}
                   placeholder="Enter pickup location"
-                  className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none ring-emerald-200 focus:ring-2"
+                  required
+                  className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-200"
                 />
-                <p className="mt-1 text-xs text-gray-500">
-                  In a real implementation, this would use GPS/Maps to select location
+                <p className="text-xs text-gray-400 mt-1">
+                  In a real implementation, this would use GPS/Maps to select
+                  location
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Pickup Time Start
                   </label>
                   <input
                     type="time"
                     name="timeStart"
                     value={form.timeStart}
-                    onChange={onChange}
-                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none ring-emerald-200 focus:ring-2"
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-200"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Pickup Time End
                   </label>
                   <input
                     type="time"
                     name="timeEnd"
                     value={form.timeEnd}
-                    onChange={onChange}
-                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 outline-none ring-emerald-200 focus:ring-2"
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-emerald-200"
                   />
                 </div>
               </div>
             </div>
-          </section>
+          </div>
 
-          {/* Actions */}
-          <div className="flex items-center justify-end gap-3">
+          {/* Buttons */}
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
             <button
               type="button"
-              onClick={() => window.history.back()}
-              className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-gray-700 hover:bg-gray-50"
+              onClick={() => (window.location.href = "/")}
+              className="px-6 py-2 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-xl bg-emerald-600 px-4 py-2 font-medium text-white hover:bg-emerald-700"
+              disabled={submitting}
+              className={`px-6 py-2 rounded-xl text-white font-semibold ${
+                submitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-emerald-600 hover:bg-emerald-700"
+              }`}
             >
-              Create Donation
+              {submitting ? "Submitting..." : "Create Donation"}
             </button>
           </div>
         </form>

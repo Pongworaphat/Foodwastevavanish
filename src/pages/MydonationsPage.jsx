@@ -1,44 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const sampleDonations = [
-  {
-    id: 1,
-    status: "Active",
-    category: "Animal Food",
-    available: true,
-    image: "/src/assets/imgfoodwaste/cat.jpg",
-    title: "Leftover Cooked Rice and Chicken",
-    description: "Safe for dogs and cats. Cooked without seasoning or spices.",
-    donorName: "Sarah Johnson",
-    donorAvatar: "/src/assets/avatars/user1.jpg",
-    rating: 4.8,
-    verified: true,
-    donationsMade: 23,
-    quantity: "2kg • Cooked Food",
-    productionDate: "10/22/2025",
-    expirationDate: "10/23/2025",
-    address: "456 Park Avenue, New York, NY 10022",
-  },
-];
 
 export default function MydonationsPage() {
   const [tab, setTab] = useState("Active");
   const [selectedDonation, setSelectedDonation] = useState(null);
+  const [myDonations, setMyDonations] = useState([]); 
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // fetch data from backend
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/my-donations"); 
+        if (!res.ok) throw new Error("Failed to fetch donations");
+        const data = await res.json();
+        if (mounted) setMyDonations(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error loading my donations:", err);
+        if (mounted) setMyDonations([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+    load();
+    return () => (mounted = false);
+  }, []);
+
   const counts = {
-    Active: sampleDonations.filter((d) => d.status === "Active").length,
-    "In Progress": sampleDonations.filter((d) => d.status === "In Progress").length,
-    Completed: sampleDonations.filter((d) => d.status === "Completed").length,
+    Active: myDonations.filter((d) => (d.status || "Active") === "Active").length,
+    "In Progress": myDonations.filter((d) => d.status === "In Progress").length,
+    Completed: myDonations.filter((d) => d.status === "Completed").length,
   };
 
-  const filtered = sampleDonations.filter((d) => {
-    if (tab === "Active") return d.status === "Active";
+  const filtered = myDonations.filter((d) => {
+    if (tab === "Active") return (d.status || "Active") === "Active";
     if (tab === "In Progress") return d.status === "In Progress";
     return d.status === "Completed";
   });
 
+  
+  const getImage = (d) => {
+    if (d.images && d.images.length > 0) return d.images[0];
+    if (d.image) return d.image;
+    return "/placeholder.jpg";
+  };
+  const getAvatar = (d) => d.donorAvatar || "/src/assets/avatars/default-avatar.jpg";
 
   return (
     <div className="min-h-screen bg-emerald-50">
@@ -93,52 +102,61 @@ export default function MydonationsPage() {
         {/* List */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
-            {filtered.map((d) => (
-              <div
-                key={d.id}
-                className="mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
-              >
-                <div className="relative h-48 w-full">
-                  <img src={d.image} alt={d.title} className="h-full w-full object-cover" />
-                  <div className="absolute left-3 top-3 rounded-full bg-pink-100 px-3 py-1 text-xs font-medium text-pink-700">
-                    {d.category}
-                  </div>
-                  {d.available && (
-                    <div className="absolute right-3 top-3 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
-                      available
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-gray-900">{d.title}</h3>
-                  <div className="mt-3 flex items-center gap-3 text-sm text-gray-700">
-                    <img
-                      src={d.donorAvatar}
-                      alt={d.donorName}
-                      className="h-8 w-8 rounded-full object-cover"
-                    />
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-gray-800">{d.donorName}</div>
-                      <div className="mt-0.5 text-xs text-gray-500">⭐ {d.rating}</div>
-                    </div>
-                    {d.verified && (
-                      <div className="ml-2 rounded-md border px-2 py-1 text-xs font-medium text-gray-600">
-                        Verified
+            {loading ? (
+              <div className="text-center py-12 text-gray-500">Loading...</div>
+            ) : filtered.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">No {tab} donations.</div>
+            ) : (
+              filtered.map((d) => {
+                const id = d._id || d.id;
+                return (
+                  <div
+                    key={id}
+                    className="mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
+                  >
+                    <div className="relative h-48 w-full">
+                      <img src={getImage(d)} alt={d.title} className="h-full w-full object-cover" />
+                      <div className="absolute left-3 top-3 rounded-full bg-pink-100 px-3 py-1 text-xs font-medium text-pink-700">
+                        {d.category || "Category"}
                       </div>
-                    )}
+                      {d.available && (
+                        <div className="absolute right-3 top-3 rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
+                          available
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-5">
+                      <h3 className="text-lg font-semibold text-gray-900">{d.title || "Untitled"}</h3>
+                      <div className="mt-3 flex items-center gap-3 text-sm text-gray-700">
+                        <img
+                          src={getAvatar(d)}
+                          alt={d.donorName}
+                          className="h-8 w-8 rounded-full object-cover"
+                        />
+                        <div className="flex-1">
+                          <div className="text-sm font-medium text-gray-800">{d.donorName || "You"}</div>
+                          <div className="mt-0.5 text-xs text-gray-500">⭐ {d.rating ?? "-"}</div>
+                        </div>
+                        {d.verified && (
+                          <div className="ml-2 rounded-md border px-2 py-1 text-xs font-medium text-gray-600">
+                            Verified
+                          </div>
+                        )}
+                      </div>
+                      <div className="mt-4">
+                        <button
+                          onClick={() => setSelectedDonation(d)}
+                          className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                        >
+                          View Details
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="mt-4">
-                    <button
-                      onClick={() => setSelectedDonation(d)}
-                      className="w-full rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                    >
-                      View Details
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                );
+              })
+            )}
           </div>
         </div>
       </div>
@@ -148,7 +166,7 @@ export default function MydonationsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-2xl shadow-lg w-[360px] md:w-[400px] max-h-[90vh] overflow-y-auto relative">
             <img
-              src={selectedDonation.image}
+              src={getImage(selectedDonation)}
               alt={selectedDonation.title}
               className="w-full h-48 object-cover rounded-t-2xl"
             />
@@ -170,14 +188,14 @@ export default function MydonationsPage() {
               <div className="border rounded-lg p-3 mb-4">
                 <div className="flex items-center gap-3">
                   <img
-                    src={selectedDonation.donorAvatar}
+                    src={getAvatar(selectedDonation)}
                     alt={selectedDonation.donorName}
                     className="h-10 w-10 rounded-full object-cover"
                   />
                   <div>
                     <div className="font-medium text-gray-800">{selectedDonation.donorName}</div>
                     <div className="text-xs text-gray-500">
-                      ⭐ {selectedDonation.rating} rating • {selectedDonation.donationsMade} donations made
+                      ⭐ {selectedDonation.rating ?? "-"} rating • {selectedDonation.donationsMade ?? 0} donations made
                     </div>
                   </div>
                   {selectedDonation.verified && (
