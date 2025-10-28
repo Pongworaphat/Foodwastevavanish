@@ -6,18 +6,35 @@ export default function SignupPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-
-    alert("สมัครสมาชิกสำเร็จ!");
-    navigate("/signin");
+    setError("");
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ message: "Signup failed" }));
+        throw new Error(err.message || "Signup failed");
+      }
+      alert("สมัครสมาชิกสำเร็จ!");
+      navigate("/signin");
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "สมัครสมาชิกไม่สำเร็จ");
+    }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-emerald-50">
       <div className="bg-neutral-900 text-white shadow-lg rounded-2xl p-8 w-[380px]">
-        <h1 className="text-2xl font-bold text-center mb-6 whitespace-nowrap flex justify-center"> สมัครสมาชิก <span className="ml-1 text-green-400">FoodwasteVanish</span></h1>
+        <h1 className="text-2xl font-bold text-center mb-6 whitespace-nowrap flex justify-center">
+          สมัครสมาชิก <span className="ml-1 text-green-400">FoodwasteVanish</span>
+        </h1>
 
         <form onSubmit={handleSignup} className="space-y-4">
           <input
@@ -46,6 +63,8 @@ export default function SignupPage() {
             className="w-full px-4 py-2 rounded-lg bg-neutral-800 border border-neutral-700 focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           />
+
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
 
           <button
             type="submit"
