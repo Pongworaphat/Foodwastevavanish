@@ -56,10 +56,10 @@ export default function UserMenu({ onSignOut }) {
 
                             <span>จัดการโปรไฟล์</span>
                         </MenuLink>
-                        <MenuLink to="/dashboard">
+                        {/* <MenuLink to="/dashboard">
 
                             <span>กิจกรรมของฉัน</span>
-                        </MenuLink>
+                        </MenuLink> */}
                         <MenuLink to="/settings">
 
                             <span>การตั้งค่า</span>
