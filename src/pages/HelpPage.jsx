@@ -42,48 +42,50 @@ export default function HelpPage() {
   };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-6">ความช่วยเหลือ</h1>
+    <div className="min-h-screen bg-emerald-50">
+      <div className="p-6 max-w-3xl mx-auto">
+        <h1 className="text-2xl font-semibold mb-6">ความช่วยเหลือ</h1>
 
-      {/* Search Bar */}
-      <div className="relative mb-6">
-        <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
-        <input
-          type="text"
-          placeholder="ค้นหาคำถามที่พบบ่อย..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-        />
-      </div>
+        {/* Search Bar */}
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="ค้นหาคำถามที่พบบ่อย..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          />
+        </div>
 
-      {/* FAQ List */}
-      <div className="bg-white rounded-xl shadow divide-y divide-gray-200">
-        <div className="px-4 py-3 font-medium text-gray-700 text-lg">คำถามที่พบบ่อย</div>
-        {filteredFaqs.length > 0 ? (
-          filteredFaqs.map((faq, index) => (
-            <div key={index}>
-              <button
-                onClick={() => toggleFAQ(index)}
-                className="w-full flex justify-between items-center px-4 py-4 text-left hover:bg-gray-50 focus:outline-none"
-              >
-                <span className="text-gray-800">{faq.question}</span>
-                {openIndex === index ? (
-                  <ChevronUp className="w-5 h-5 text-gray-500" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-500" />
+        {/* FAQ List */}
+        <div className="bg-white rounded-xl shadow divide-y divide-gray-200">
+          <div className="px-4 py-3 font-medium text-gray-700 text-lg">คำถามที่พบบ่อย</div>
+          {filteredFaqs.length > 0 ? (
+            filteredFaqs.map((faq, index) => (
+              <div key={index}>
+                <button
+                  onClick={() => toggleFAQ(index)}
+                  className="w-full flex justify-between items-center px-4 py-4 text-left hover:bg-gray-50 focus:outline-none"
+                >
+                  <span className="text-gray-800">{faq.question}</span>
+                  {openIndex === index ? (
+                    <ChevronUp className="w-5 h-5 text-gray-500" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-500" />
+                  )}
+                </button>
+                {openIndex === index && (
+                  <div className="px-6 pb-4 text-sm text-gray-600 bg-gray-50">
+                    {faq.answer}
+                  </div>
                 )}
-              </button>
-              {openIndex === index && (
-                <div className="px-6 pb-4 text-sm text-gray-600 bg-gray-50">
-                  {faq.answer}
-                </div>
-              )}
-            </div>
-          ))
-        ) : (
-          <div className="px-6 py-4 text-gray-500 text-sm">ไม่พบคำถามที่ตรงกับการค้นหา</div>
-        )}
+              </div>
+            ))
+          ) : (
+            <div className="px-6 py-4 text-gray-500 text-sm">ไม่พบคำถามที่ตรงกับการค้นหา</div>
+          )}
+        </div>
       </div>
     </div>
   );

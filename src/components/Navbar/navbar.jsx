@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; 
 import { Bell } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import UserMenu from "./DropdownMenu/UserMenu";
@@ -8,6 +8,7 @@ import ButtonSignIn from "./ButtonSingin";
 export default function Navbar() {
   const [isSignedIn, setIsSignedIn] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate(); // ← เพิ่มบรรทัดนี้
 
   useEffect(() => {
     const savedStatus = localStorage.getItem("isSignedIn");
@@ -19,6 +20,7 @@ export default function Navbar() {
   const handleSignOut = () => {
     setIsSignedIn(false);
     localStorage.removeItem("isSignedIn");
+    navigate("/"); 
   };
 
   return (

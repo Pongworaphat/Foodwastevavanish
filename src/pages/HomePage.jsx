@@ -8,7 +8,6 @@ export default function Homepage() {
         <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-14 lg:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
 
-            {/* Hero text */}
             <div className="transform -translate-x-4 lg:-translate-x-10">
               <p className="inline-flex items-center text-emerald-700 font-medium rounded-full bg-white/70 px-3 py-1 ring-1 ring-emerald-200 mb-6">
                 Reduce food waste • Help others
@@ -27,7 +26,6 @@ export default function Homepage() {
               </div>
             </div>
 
-            {/* Hero image */}
             <div className="relative transform translate-x-4 lg:translate-x-10">
               <div className="rounded-4xl overflow-hidden shadow-xl">
                 <img
@@ -42,7 +40,6 @@ export default function Homepage() {
         </div>
       </header>
 
-      {/* Features section */}
       <section className="bg-white py-14">
         <div className="max-w-6xl mx-auto px-6 lg:px-10 text-center">
           <h2 className="text-3xl font-semibold mb-2">Platform Features</h2>
@@ -76,7 +73,6 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Call to action banner */}
       <section className="py-12">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="rounded-2xl bg-gradient-to-r from-emerald-700 to-emerald-500 text-white py-12 px-6 text-center shadow-lg">
